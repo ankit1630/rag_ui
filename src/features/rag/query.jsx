@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { selectModel, selectSelectedCollection } from './ragSlice';
 
 import Card from '@mui/material/Card';
@@ -8,17 +8,10 @@ import CardHeader from '@mui/material/CardHeader';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
-import IconButton from '@mui/material/IconButton';
-import DeleteIcon from '@mui/icons-material/Delete';
 
 import axios from 'axios';
 
 import './styles/query.css';
-import { List, ListItem, ListItemText, TextareaAutosize } from '@mui/material';
 
 export const Query = () => {
     const selectedCollection = useSelector(selectSelectedCollection);
