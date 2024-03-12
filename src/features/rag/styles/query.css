@@ -1,0 +1,42 @@
+.query-container {
+    margin-top: 40px;
+}
+
+.query-container-header {
+    text-align: justify;
+    border-bottom: 1px dashed skyblue;
+}
+
+.query-action-btns {
+    justify-content: center;
+    border-bottom: 1px dashed skyblue;
+}
+
+.query-text-box {
+    resize: vertical;
+    max-height: 300px; 
+    min-height: 200px;
+    width: 100%
+}
+
+.query-text,
+.query-prompt,
+.query-source-cnt {
+    margin-bottom: 40px;
+}
+
+.query-source-cnt {
+    display: flex;
+}
+
+.query-text-title,
+.query-prompt-title,
+.query-source-cnt-title {
+    text-align: justify;
+    margin-bottom: 20px;
+}
+
+.query-source-cnt-title {
+    padding-right: 40px;
+    margin-bottom: revert;
+}
