@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import { useSelector, useDispatch } from 'react-redux';
-import { selectSelectedCollection } from './ragSlice';
+import { selectModel, selectSelectedCollection } from './ragSlice';
 
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
@@ -21,6 +21,7 @@ import './styles/deletion.css';
 import { List, ListItem, ListItemText } from '@mui/material';
 
 export const Deletion = () => {
+    const model = useSelector(selectModel);
     const selectedCollection = useSelector(selectSelectedCollection);
     const [deletionModalState, setDeletionModalState] = useState(false);
     const [deletionType, setDeletionType] = useState("");
@@ -66,7 +67,11 @@ export const Deletion = () => {
 
         try {
             await new Promise((resolve) => setTimeout(resolve, 2000));
-            const response = await axios.put("/delete/file", { fileName: fileName });
+            const response = await axios.put("/delete/file", { 
+                fileName: fileName,
+                model_name: model,
+                collection_name: selectedCollection
+            });
             console.log(response.data);
             setFileList(fileList.filter((file) => file.title !== fileName));
             setFileDeleteProgress(false);

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import { useSelector, useDispatch } from 'react-redux';
-import { selectSelectedCollection } from './ragSlice';
+import { selectModel, selectSelectedCollection } from './ragSlice';
 
 import axios from 'axios';
 import Card from '@mui/material/Card';
@@ -42,6 +42,7 @@ export const Ingestion = () => {
         isError: false
     });
     const {fileIsUploading, isSuccess, isError} = fileUploadStatus;
+    const model = useSelector(selectModel);
     const dispatch = useDispatch();
 
     if (!selectedCollection) {
@@ -88,10 +89,12 @@ export const Ingestion = () => {
 
         const formData = new FormData();
         formData.append("file", selectedFile);
+        formData.append("model_type", model);
+        formData.append("collection_type", selectedCollection);
 
         try {
             await new Promise((resolve) => setTimeout(resolve, 2000));
-            const response = await axios.post("/api/upload", formData, {
+            const response = await axios.post("/api/file_upload_qdrant", formData, {
               headers: {
                 "Content-Type": "multipart/form-data"
               }

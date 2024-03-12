@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   model: "",
-  collections: [],
+  collections: null,
   selectedCollection: ""
 };
 
@@ -12,9 +12,12 @@ export const ragSlice = createSlice({
   reducers: {
     changeModel: (state, action) => {
         state.model = action.payload.model;
-        state.collections = action.payload.collections;
+    },
+    updateCollections: (state, action) => {
+        state.collections = action.payload;
     },
     onSelectCollection: (state, action) => {
+      console.log(action);
         state.selectedCollection = action.payload;
     },
     onCreateCollection: (state, action) => {
@@ -24,7 +27,7 @@ export const ragSlice = createSlice({
   },
 });
 
-export const { changeModel, onSelectCollection, onCreateCollection } = ragSlice.actions;
+export const { changeModel, onSelectCollection, onCreateCollection, updateCollections } = ragSlice.actions;
 
 export const selectModel = (state) => state.rag.model;
 export const selectCollectionOptions = (state) => state.rag.collections;

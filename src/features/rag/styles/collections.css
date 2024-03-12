@@ -3,3 +3,17 @@
     justify-content: space-between;
     margin-top: 40px;
 }
+
+.collections-option {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px;
+}
+
+.collections-option:hover {
+    background-color: gray;
+}
+
+.collections-option-delete {
+    cursor: pointer;
+}

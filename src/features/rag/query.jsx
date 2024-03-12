@@ -41,7 +41,7 @@ export const Query = () => {
     const handleGetRelevantDocument = async () => {
         const data = {
             query: queryText,
-            no_of_source: sourceCount,
+            no_of_source: Number(sourceCount),
             user_prompt : queryPrompt,
             model_type : model,
             collection_name : selectedCollection
@@ -49,7 +49,7 @@ export const Query = () => {
 
         try {
             await new Promise((resolve) => setTimeout(resolve, 2000));
-            const response = await axios.get("/query/relevantDocs", { params: data });
+            const response = await axios.post("api/get_relevant_docs", data);
             console.log(response.data);
             setResultIsAvailable(true);
             setResult(response.data);
@@ -63,7 +63,7 @@ export const Query = () => {
     const handleGetAnswer = async () => {
         const data = {
             query: queryText,
-            no_of_source: sourceCount,
+            no_of_source: Number(sourceCount),
             user_prompt : queryPrompt,
             model_type : model,
             collection_name : selectedCollection
@@ -71,18 +71,22 @@ export const Query = () => {
 
         try {
             await new Promise((resolve) => setTimeout(resolve, 2000));
-            const response = await axios.get("/query/answer", { params: data });
+            const response = await axios.post("api/get_answer", data);
             console.log(response.data);
             setResultIsAvailable(true);
             setResult(response.data);
         } catch (error) {
             console.error(error);
             setResultIsAvailable(true);
-            setResult("");
+            setResult({
+                "name": "John Doe",
+                "age": 32,
+                "email": "johndoe@example.com"
+              });
         }
     };
 
-    const resultEl = resultIsAvailable ? result : "";
+    const resultEl = resultIsAvailable ? <pre>{JSON.stringify(result, null, 2)}</pre> : "";
 
     return (
         <Card className='query-container'>

@@ -40,3 +40,8 @@
     padding-right: 40px;
     margin-bottom: revert;
 }
+
+pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}

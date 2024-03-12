@@ -15,18 +15,14 @@ import { Ingestion } from './ingestion';
 import { Deletion } from './deletion';
 import { Query } from './query';
 
-const mockedCollection = ["collection1", "collection2", "collection3", "collection22"]
-
 export function Rag() {
     const selectedModel = useSelector(selectModel);
-    const collectionOptions = useSelector(selectCollectionOptions);
     const dispatch = useDispatch();
 
     const handleModelChange = (ev) => {
         // here make an api call which fetches collections
         dispatch(changeModel({
-            model: ev.target.value,
-            collections: mockedCollection
+            model: ev.target.value
         }));
     }
 
@@ -49,7 +45,7 @@ export function Rag() {
     return (
         <Container className='rag-container'>
             {_renderModel()}
-            <Collections model={selectedModel} collections={collectionOptions} />
+            <Collections model={selectedModel} />
             <Ingestion />
             <Deletion />
             <Query />
