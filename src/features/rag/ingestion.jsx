@@ -88,17 +88,26 @@ export const Ingestion = () => {
         });
 
         const formData = new FormData();
+        console.log(typeof selectedFile, );
         formData.append("file", selectedFile);
         formData.append("model_type", model);
-        formData.append("collection_type", selectedCollection);
+        formData.append("collection_name", selectedCollection);
 
         try {
-            await new Promise((resolve) => setTimeout(resolve, 2000));
+            // await new Promise((resolve) => setTimeout(resolve, 2000));
             const response = await axios.post("/api/file_upload_qdrant", formData, {
               headers: {
                 "Content-Type": "multipart/form-data"
               }
             });
+
+            // const binaryData = new Blob([selectedFile], {type: selectedFile.type});
+
+            // const response = await axios.post("/api/file_upload_qdrant", binaryData, {
+            //     headers: {
+            //         "Content-Type": "application/octet-stream"
+            //     }
+            //   });
       
             setFileIsUploading({
                 fileIsUploading: false,

@@ -34,6 +34,7 @@ export const Collections = (props) => {
             });
             console.log(response);
             dispatch(updateCollections(response.data));
+            dispatch(onSelectCollection(""));
             // dispatch(updateCollections(response.data.products.map((product) => product.title)));
             setFetchCollectionProgress(false);
         }
@@ -75,11 +76,15 @@ export const Collections = (props) => {
         });
     }
 
-    const handleCreateCollectionBtnClick = () => {
+    const handleCreateCollectionBtnClick = async () => {
         // check for existing collection
         // New collection -> New_Collection
         // xhr for creating collection
         // axios("https://abc.com/createCollection").then()
+        const response = await axios.post("api/create_collection", {
+            model_type: props.model,
+            collection_name: createCollectionDialog.collectionName
+        });
         dispatch(onCreateCollection(createCollectionDialog.collectionName));
         handleClose();
     }
@@ -93,9 +98,14 @@ export const Collections = (props) => {
         });
     }
 
-    const handleCollectionDelete = (ev, collectionToDelete) => {
+    const handleCollectionDelete = async (ev, collectionToDelete) => {
         ev.stopPropagation();
+
         const updatedCollections = collectionOptions.filter((collection) => collection !== collectionToDelete);
+
+        const response = await axios.post("api/delete_collection", {
+            collection_name: collectionToDelete
+        });
 
         dispatch(updateCollections(updatedCollections));
 

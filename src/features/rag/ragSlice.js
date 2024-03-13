@@ -18,7 +18,7 @@ export const ragSlice = createSlice({
     },
     onSelectCollection: (state, action) => {
       console.log(action);
-        state.selectedCollection = action.payload;
+      state.selectedCollection = action.payload;
     },
     onCreateCollection: (state, action) => {
         state.collections = [action.payload, ...state.collections];

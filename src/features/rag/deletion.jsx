@@ -21,7 +21,6 @@ import './styles/deletion.css';
 import { List, ListItem, ListItemText } from '@mui/material';
 
 export const Deletion = () => {
-    const model = useSelector(selectModel);
     const selectedCollection = useSelector(selectSelectedCollection);
     const [deletionModalState, setDeletionModalState] = useState(false);
     const [deletionType, setDeletionType] = useState("");
@@ -30,17 +29,20 @@ export const Deletion = () => {
     const [fileDeleteInProgress, setFileDeleteProgress] = useState(false);
 
     useEffect(() => {
-        const fetchFiles = async () => {
-          const response = await axios.get("https://dummyjson.com/products");
-          setFileList(response.data.products);
+        const url = deletionType === "file" ? "api/get_all_filenames" : "api/get_all_folders"
+        const fetchFilesorFolder = async () => {
+          const response = await axios.post(url, {
+            collection_name: selectedCollection
+          });
+          setFileList(response.data);
           setFetchFileProgress(false);
         }
 
         if (deletionType) {
             setFetchFileProgress(true);
-            fetchFiles();
+            fetchFilesorFolder();
         }
-    }, [deletionType])
+    }, [deletionType, selectedCollection])
 
     if (!selectedCollection) {
         return null;
@@ -51,6 +53,11 @@ export const Deletion = () => {
         setDeletionType("file");
     };
 
+    const handleFolderDeletion = () => {
+        setDeletionModalState(true);
+        setDeletionType("folder");
+    }
+
     const handleClose = (ev, reason) => {
         if (reason === 'backdropClick' || reason === 'escapeKeyDown') return;
 
@@ -59,21 +66,37 @@ export const Deletion = () => {
         setDeletionType("");
     };
 
-    const onDeleteFile = async (fileName) => {
+    const onDeleteFile = async (fileOrFolderName) => {
         if (fileDeleteInProgress) return;
 
-        console.log("deleting", fileName);
+        console.log("deleting", fileOrFolderName);
         setFileDeleteProgress(true);
+        let url;
+        let data;
 
-        try {
-            await new Promise((resolve) => setTimeout(resolve, 2000));
-            const response = await axios.put("/delete/file", { 
-                fileName: fileName,
-                model_name: model,
+        if (deletionType === "file") {
+            url = "api/delete_file";
+            data = { 
+                filename: fileOrFolderName,
                 collection_name: selectedCollection
-            });
-            console.log(response.data);
-            setFileList(fileList.filter((file) => file.title !== fileName));
+            };
+        } else {
+            url = "api/delete_folder";
+            data = { 
+                folder_name: fileOrFolderName,
+                collection_name: selectedCollection
+            };
+        }
+        try {
+            // await new Promise((resolve) => setTimeout(resolve, 2000));
+            const response = await axios.post(url, data);
+            console.log("res", response);
+            if (!response.data) {
+                console.error(fileOrFolderName, " not deleted");
+            } else {
+                console.log(response.data);
+                setFileList(fileList.filter((file) => file !== fileOrFolderName));
+            }
             setFileDeleteProgress(false);
         } catch (error) {
             console.error(error);
@@ -85,16 +108,16 @@ export const Deletion = () => {
     const fileListItemEl = fileList.map((file) => {
         return (
             <ListItem 
-                key={file.title}
+                key={file}
                 className='deletion-list-item'
                 secondaryAction={
                     <IconButton edge="end" aria-label="delete">
                       <DeleteIcon />
                     </IconButton>
                 }
-                onClick={() => onDeleteFile(file.title)}
+                onClick={() => onDeleteFile(file)}
             >
-                <ListItemText>{file.title}</ListItemText>
+                <ListItemText>{file}</ListItemText>
             </ListItem>
         );
     });
@@ -103,7 +126,7 @@ export const Deletion = () => {
     if (fetchFileIsInProgress) {
         cardContentEl = <div>Loading....</div>;
     } else if (!fileList.length) {
-        cardContentEl = <div>No files to delete.</div>;
+        cardContentEl = <div>No {deletionType} to delete.</div>;
     } else {
         cardContentEl = <List>{fileListItemEl}</List>;
     }
@@ -116,7 +139,7 @@ export const Deletion = () => {
             </CardContent>
             <CardActions>
                 <Button onClick={handleFileDeletion}>Delete File</Button>
-                <Button>Delete Folder</Button>
+                <Button onClick={handleFolderDeletion}>Delete Folder</Button>
             </CardActions>
             <Dialog
                 open={deletionModalState}
