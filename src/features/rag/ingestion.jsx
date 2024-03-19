@@ -125,7 +125,7 @@ export const Ingestion = () => {
 
     const selectedFileEl = selectedFile ? <div>{selectedFile.name}</div> : <div>Choose {ingestionType}</div>;
     const errorMsgEl = isError ? <span className='ingestion-file-upload-error'>(Failed to upload file!!!)</span> : null;
-    const allowedFileType = ingestionType === "file" ? ".pdf,.doc,.docx,.txt,.ppt,.pptx,.xls,.xlsx" : ".zip";
+    const allowedFileType = ingestionType === "file" ? ".pdf,.doc,.docx,.txt,.ppt,.pptx,.xls,.xlsx,.json,.csv,.html" : ".zip";
 
     return (
         <Card className='ingestion-container'>
