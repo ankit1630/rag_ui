@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 
 import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
-import { selectSelectedCollection, onSelectCollection, onCreateCollection, updateCollections, selectCollectionOptions } from './ragSlice';
+import { selectSelectedCollection, onSelectCollection, onCreateCollection, updateCollections, selectCollectionOptions, changeModel } from './ragSlice';
 
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
@@ -23,23 +23,35 @@ export const Collections = (props) => {
         collectionName: ""
     });
     const [fetchCollectionInProgress, setFetchCollectionProgress] = useState(false);
+    // const [fetchingCollectionError, setFetchingCollectionError] = useState(false);
     const selectedCollection = useSelector(selectSelectedCollection);
     const collectionOptions = useSelector(selectCollectionOptions);
     const dispatch = useDispatch();
 
     useEffect(() => {
         const fetchCollections = async () => {
-            const response = await axios.post("api/get_all_collections", {
-                model_type: props.model
-            });
-            console.log(response);
-            dispatch(updateCollections(response.data));
-            dispatch(onSelectCollection(""));
-            // dispatch(updateCollections(response.data.products.map((product) => product.title)));
-            setFetchCollectionProgress(false);
+            try {
+                const response = await axios.post("api/get_all_collections", {
+                    model_type: props.model
+                });
+
+                dispatch(updateCollections(response.data));
+                dispatch(onSelectCollection(""));
+                setFetchCollectionProgress(false);
+            } catch (error) {
+                console.error("error in fetching collection", error);
+                // setFetchingCollectionError(true);
+                dispatch(changeModel({
+                    model: ""
+                }));
+                setFetchCollectionProgress(false);
+            } finally {
+                setFetchCollectionProgress(false);
+            }
         }
 
         if (props.model) {
+            // setFetchingCollectionError(false);
             setFetchCollectionProgress(true);
             fetchCollections();
         }
@@ -54,7 +66,6 @@ export const Collections = (props) => {
     }
 
     const handleCollectionSelection = (ev, selectedValue) => {
-        console.log("se", selectedValue);
         dispatch(onSelectCollection(selectedValue))
     }
 

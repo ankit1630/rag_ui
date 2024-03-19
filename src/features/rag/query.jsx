@@ -78,11 +78,7 @@ export const Query = () => {
         } catch (error) {
             console.error(error);
             setResultIsAvailable(true);
-            setResult({
-                "name": "John Doe",
-                "age": 32,
-                "email": "johndoe@example.com"
-              });
+            setResult("Error in fetching answer!!!");
         }
     };
 

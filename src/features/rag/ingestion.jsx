@@ -100,14 +100,6 @@ export const Ingestion = () => {
                 "Content-Type": "multipart/form-data"
               }
             });
-
-            // const binaryData = new Blob([selectedFile], {type: selectedFile.type});
-
-            // const response = await axios.post("/api/file_upload_qdrant", binaryData, {
-            //     headers: {
-            //         "Content-Type": "application/octet-stream"
-            //     }
-            //   });
       
             setFileIsUploading({
                 fileIsUploading: false,
@@ -133,6 +125,7 @@ export const Ingestion = () => {
 
     const selectedFileEl = selectedFile ? <div>{selectedFile.name}</div> : <div>Choose {ingestionType}</div>;
     const errorMsgEl = isError ? <span className='ingestion-file-upload-error'>(Failed to upload file!!!)</span> : null;
+    const allowedFileType = ingestionType === "file" ? ".pdf,.doc,.docx,.txt,.ppt,.pptx,.xls,.xlsx" : ".zip";
 
     return (
         <Card className='ingestion-container'>
@@ -142,7 +135,7 @@ export const Ingestion = () => {
             </CardContent>
             <CardActions>
                 <Button onClick={handleIngestFile}>Ingest File</Button>
-                {/* <Button onClick={handleIngestFolder}>Ingest Folder</Button> */}
+                <Button onClick={handleIngestFolder}>Ingest Folder (only .zip)</Button>
             </CardActions>
             <Dialog
                 open={ingestionModalIsOpen}
@@ -160,7 +153,7 @@ export const Ingestion = () => {
                     disabled={fileIsUploading}
                 >
                     {selectedFileEl}
-                    <VisuallyHiddenInput type="file" onChange={handleFileOrFolderChange} />
+                    <VisuallyHiddenInput type="file" onChange={handleFileOrFolderChange} accept={allowedFileType} />
                 </Button>
                 </DialogContent>
                 <DialogActions>
