@@ -30,10 +30,6 @@ export const Query = () => {
     const [resetMemory, setResetMemory] = useState(true);
     const [searchType, setSearchType] = useState("similarity");
 
-    if (!selectedCollection) {
-        return null;
-    }
-
     const onQueryTextChange = (ev) => {
         setQueryText(ev.target.value);
     };
@@ -128,8 +124,8 @@ export const Query = () => {
                         onChange={onQueryPromptChange}
                     />
                 </div>
-                <div className='query-source-cnt'>
-                    <div>
+                <div className='query-source'>
+                    <div className='query-source-cnt'>
                         <div className="query-source-cnt-title">Source count</div>
                         <input 
                             className="query-source-box" 
@@ -138,7 +134,7 @@ export const Query = () => {
                             onChange={onQuerySourceCntChnage}
                         />
                     </div>
-                    <FormControl >
+                    <FormControl className='query-source-search-type'>
                         <InputLabel id="demo-simple-select-label">Search type</InputLabel>
                         <Select
                             labelId="demo-simple-select-label"

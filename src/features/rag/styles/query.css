@@ -25,9 +25,13 @@
     margin-bottom: 40px;
 }
 
-.query-source-cnt {
+.query-source {
     display: flex;
     justify-content: space-between;
+}
+
+.query-source-search-type {
+    flex-basis: 20%;
 }
 
 .query-text-title,
