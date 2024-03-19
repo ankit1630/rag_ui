@@ -27,6 +27,7 @@
 
 .query-source-cnt {
     display: flex;
+    justify-content: space-between;
 }
 
 .query-text-title,

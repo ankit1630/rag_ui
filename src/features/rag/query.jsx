@@ -12,6 +12,12 @@ import Button from '@mui/material/Button';
 import axios from 'axios';
 
 import './styles/query.css';
+import { Checkbox } from '@mui/material';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
 
 export const Query = () => {
     const selectedCollection = useSelector(selectSelectedCollection);
@@ -21,6 +27,8 @@ export const Query = () => {
     const [sourceCount, setSourceCount] = useState(1);
     const [resultIsAvailable, setResultIsAvailable] = useState(false);
     const [result, setResult] = useState("");
+    const [resetMemory, setResetMemory] = useState(true);
+    const [searchType, setSearchType] = useState("similarity");
 
     if (!selectedCollection) {
         return null;
@@ -44,7 +52,9 @@ export const Query = () => {
             no_of_source: Number(sourceCount),
             user_prompt : queryPrompt,
             model_type : model,
-            collection_name : selectedCollection
+            collection_name : selectedCollection,
+            reset_memory: resetMemory,
+            search_type: searchType
         }
 
         try {
@@ -66,7 +76,9 @@ export const Query = () => {
             no_of_source: Number(sourceCount),
             user_prompt : queryPrompt,
             model_type : model,
-            collection_name : selectedCollection
+            collection_name : selectedCollection,
+            reset_memory: resetMemory,
+            search_type: searchType
         }
 
         try {
@@ -80,6 +92,14 @@ export const Query = () => {
             setResultIsAvailable(true);
             setResult("Error in fetching answer!!!");
         }
+    };
+
+    const handleResetMemory = (ev) => {
+        setResetMemory(ev.target.checked);
+    };
+
+    const handleSearchTypeChange = (ev) => {
+        setSearchType(ev.target.value);
     };
 
     const resultEl = resultIsAvailable ? <pre>{JSON.stringify(result, null, 2)}</pre> : "";
@@ -109,12 +129,36 @@ export const Query = () => {
                     />
                 </div>
                 <div className='query-source-cnt'>
-                    <div className="query-source-cnt-title">Source count</div>
-                    <input 
-                        className="query-source-box" 
-                        placeholder='No. of resources' 
-                        value={sourceCount}
-                        onChange={onQuerySourceCntChnage}
+                    <div>
+                        <div className="query-source-cnt-title">Source count</div>
+                        <input 
+                            className="query-source-box" 
+                            placeholder='No. of resources' 
+                            value={sourceCount}
+                            onChange={onQuerySourceCntChnage}
+                        />
+                    </div>
+                    <FormControl >
+                        <InputLabel id="demo-simple-select-label">Search type</InputLabel>
+                        <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            value={searchType}
+                            label="Search type"
+                            onChange={handleSearchTypeChange}
+                        >
+                            <MenuItem value={"similarity"}>Similarity</MenuItem>
+                            <MenuItem value={"mmr"}>MMR</MenuItem>
+                        </Select>
+                    </FormControl>
+                    <FormControlLabel
+                        label="Reset memory"
+                        control={
+                            <Checkbox
+                                checked={resetMemory}
+                                onChange={handleResetMemory}
+                            />
+                        }
                     />
                 </div>
             </CardContent>
