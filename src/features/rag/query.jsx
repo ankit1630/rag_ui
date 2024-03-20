@@ -29,6 +29,7 @@ export const Query = () => {
     const [result, setResult] = useState("");
     const [resetMemory, setResetMemory] = useState(true);
     const [searchType, setSearchType] = useState("similarity");
+    const [getXhrIsInProgress, setGetXhrStatus] = useState(false);
 
     if (!selectedCollection) {
         return null;
@@ -57,8 +58,10 @@ export const Query = () => {
             search_type: searchType
         }
 
+        setGetXhrStatus(true);
+
         try {
-            await new Promise((resolve) => setTimeout(resolve, 2000));
+            // await new Promise((resolve) => setTimeout(resolve, 2000));
             const response = await axios.post("api/get_relevant_docs", data);
             console.log(response.data);
             setResultIsAvailable(true);
@@ -68,6 +71,8 @@ export const Query = () => {
             setResultIsAvailable(true);
             setResult("");
         }
+
+        setGetXhrStatus(false);
     };
 
     const handleGetAnswer = async () => {
@@ -81,8 +86,10 @@ export const Query = () => {
             search_type: searchType
         }
 
+        setGetXhrStatus(true);
+
         try {
-            await new Promise((resolve) => setTimeout(resolve, 2000));
+            // await new Promise((resolve) => setTimeout(resolve, 2000));
             const response = await axios.post("api/get_answer", data);
             console.log(response.data);
             setResultIsAvailable(true);
@@ -92,6 +99,8 @@ export const Query = () => {
             setResultIsAvailable(true);
             setResult("Error in fetching answer!!!");
         }
+
+        setGetXhrStatus(false);
     };
 
     const handleResetMemory = (ev) => {
@@ -163,8 +172,8 @@ export const Query = () => {
                 </div>
             </CardContent>
             <CardActions className='query-action-btns'>
-                <Button variant='contained' onClick={handleGetRelevantDocument}>Get relevant documents</Button>
-                <Button variant='contained' onClick={handleGetAnswer}>Get answer</Button>
+                <Button variant='contained' disabled={getXhrIsInProgress} onClick={handleGetRelevantDocument}>Get relevant documents</Button>
+                <Button variant='contained' disabled={getXhrIsInProgress} onClick={handleGetAnswer}>Get answer</Button>
             </CardActions>
             <CardContent>
                 {resultEl}

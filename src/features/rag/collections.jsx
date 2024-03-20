@@ -83,7 +83,7 @@ export const Collections = (props) => {
     const handleNewCollectionNameChange = (ev) => {
         setCreateCollectionModelValue({
             ...createCollectionDialog,
-            collectionName: ev.target.value + "_" + props.model.toLowerCase()
+            collectionName: ev.target.value
         });
     }
 
@@ -96,7 +96,7 @@ export const Collections = (props) => {
             model_type: props.model,
             collection_name: createCollectionDialog.collectionName
         });
-        dispatch(onCreateCollection(createCollectionDialog.collectionName));
+        dispatch(onCreateCollection(createCollectionDialog.collectionName  + "_" + props.model.toLowerCase()));
         handleClose();
     }
 
