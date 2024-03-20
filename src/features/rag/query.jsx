@@ -30,6 +30,10 @@ export const Query = () => {
     const [resetMemory, setResetMemory] = useState(true);
     const [searchType, setSearchType] = useState("similarity");
 
+    if (!selectedCollection) {
+        return null;
+    }
+
     const onQueryTextChange = (ev) => {
         setQueryText(ev.target.value);
     };
