@@ -107,6 +107,10 @@ export const Ingestion = () => {
                 isError: false
             });
             console.log(response.data); // Do something with the response data
+            dispatch(updateIngestionModalState({
+                ingestionModalIsOpen: false,
+                ingestionType: ""
+            }));
           } catch (error) {
             setFileIsUploading({
                 fileIsUploading: false,
