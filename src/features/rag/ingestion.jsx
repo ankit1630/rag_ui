@@ -95,7 +95,7 @@ export const Ingestion = () => {
 
         try {
             // await new Promise((resolve) => setTimeout(resolve, 2000));
-            const response = await axios.post("/api/file_upload_qdrant", formData, {
+            const response = await axios.post(`/api/${ingestionType}_upload_qdrant`, formData, {
               headers: {
                 "Content-Type": "multipart/form-data"
               }
