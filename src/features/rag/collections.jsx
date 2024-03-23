@@ -136,6 +136,10 @@ export const Collections = (props) => {
         )
     };
 
+    const inputprops = {
+        dir: "auto"
+    };
+
     return (
         <div className='collections-conatainer'>
             <Autocomplete
@@ -166,6 +170,7 @@ export const Collections = (props) => {
                     <TextField
                         autoFocus
                         required
+                        inputProps={inputprops}
                         margin="dense"
                         label="Create collection"
                         fullWidth

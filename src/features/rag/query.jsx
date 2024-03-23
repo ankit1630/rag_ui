@@ -120,6 +120,7 @@ export const Query = () => {
                 <div className='query-text'>
                     <div className="query-text-title">Write your query</div>
                     <textarea
+                        dir="auto"
                         className="query-text-box" 
                         rows={12} 
                         placeholder='Jot down your query...'
@@ -130,6 +131,7 @@ export const Query = () => {
                 <div className='query-prompt'>
                     <div className="query-prompt-title">Prompt</div>
                     <textarea
+                        dir="auto"
                         className="query-text-box"
                         rows={12}
                         placeholder='Jot down your promt...'
