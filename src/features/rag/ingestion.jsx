@@ -97,7 +97,8 @@ export const Ingestion = () => {
             // await new Promise((resolve) => setTimeout(resolve, 2000));
             const response = await axios.post(`/api/${ingestionType}_upload_qdrant`, formData, {
               headers: {
-                "Content-Type": "multipart/form-data"
+                "Content-Type": "multipart/form-data",
+                "Expect" : "100-continue"
               }
             });
       
