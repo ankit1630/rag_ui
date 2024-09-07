@@ -1,0 +1,29 @@
+.company-information {
+    margin-top: 40px;
+}
+
+.company-info-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.owner-form {
+    border: 1px dashed;
+    border-radius: 8px;
+    padding: 12px;
+    margin: 20px 0;
+}
+
+.owner-role {
+    border: 1px dashed !important;
+    padding: 12px !important;
+    display: flex !important;
+    border-radius: 8px !important;
+    margin: 20px 0 !important;
+}
+
+.save-comapny-details {
+    display: flex;
+    margin-top: 20px;
+}

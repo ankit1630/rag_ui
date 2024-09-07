@@ -1,10 +1,11 @@
-import { configureStore } from '@reduxjs/toolkit';
-import ragReducer from '../features/rag/ragSlice';
-import ingestionReducer from '../features/rag/ingestionSlice';
+import { configureStore } from "@reduxjs/toolkit";
+import businessFormSlice from "../features/slices/businessFormSlice";
+import { companyInformationSlice } from "../features/slices/companyInformationSlice";
+
 
 export const store = configureStore({
   reducer: {
-    rag: ragReducer,
-    ingestion: ingestionReducer
+    businessForm: businessFormSlice,
+    companyInformation: companyInformationSlice,
   },
 });

@@ -1,0 +1,37 @@
+.business-form {
+    display: flex;
+    margin: auto;
+    max-width: 1000px;
+    padding: 40px 0;
+    border: 2px;
+    flex-direction: column;
+}
+
+.submitter-name {
+   padding-bottom: 20px;
+}
+
+.submitter-email {
+    padding-bottom: 20px;
+}
+
+.submitter-address {
+    padding-top: 20px;
+    padding-bottom: 20px;
+ }
+ 
+ .submitter-contact {
+     padding-bottom: 20px;
+ }
+
+.submitter-name-text-field {
+    margin-top: 12px;
+}
+
+.submitter-email-text-field {
+    margin-top: 12px;
+}
+
+.company-card {
+    margin-top: 20px;
+}

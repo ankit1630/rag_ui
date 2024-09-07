@@ -1,11 +1,11 @@
 import React from 'react';
 import './App.css';
-import { Rag } from './features/rag/rag';
+import { BusinessForm } from './features/businessForm';
 
 function App() {
   return (
     <div className="App">
-      <Rag />
+      <BusinessForm />
     </div>
   );
 }
