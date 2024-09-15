@@ -20,7 +20,6 @@ export const businessFormSlice = createSlice({
   reducers: {
     changeSubmmitterDetails: (state, {payload}) => {
       state.submitterDetails[payload.key] = payload.value;
-      console.log(state);
     },
     toggleSubmitterIsOwner: (state, action) => {
       state.submitterIsOwner = action.payload;

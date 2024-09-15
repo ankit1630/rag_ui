@@ -27,3 +27,36 @@
     display: flex;
     margin-top: 20px;
 }
+
+.added-owners {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px dashed;
+}
+
+.added-owners-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);
+}
+
+.added-owners-list-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px 0;
+    border-bottom: 1px solid lightgray;
+    margin: 0 20px;
+}
+
+.company-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.added-companies-list-item {
+    padding: 20px 0;
+    border-bottom: 1px solid lightgray;
+    margin: 0 20px;
+}

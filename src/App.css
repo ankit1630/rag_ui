@@ -10,7 +10,6 @@
 }
 
 .App-header {
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -20,6 +19,12 @@
 
 .App-link {
   color: rgb(112, 76, 182);
+}
+
+.App {
+  background: wheat;
+  height: 100vh;
+    overflow-y: scroll;
 }
 
 @keyframes App-logo-float {

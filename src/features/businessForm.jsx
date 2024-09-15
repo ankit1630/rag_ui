@@ -39,8 +39,6 @@ export function BusinessForm() {
   const submitterDetails = useSelector(selectSubmmitterDetails);
   const submitterIsOwner = useSelector(isSubmitterOwner);
 
-  console.log(submitterDetails);
-
   const handleFileUpload = (ev) => {
     dispatch(changeSubmmitterDetails({key: "licenceFile", value: ev.target.files[0]}))
   }

@@ -17,6 +17,7 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { styled } from '@mui/material/styles';  
 
 import "./../styles/companyInformation.css";
+import { addCompany, addOwner, selectOwners, selectCompanies } from "./slices/companyInformationSlice";
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -32,6 +33,9 @@ const VisuallyHiddenInput = styled('input')({
 
 export function CompanyInformation() {
   const dispatch = useDispatch();
+  const owners = useSelector(selectOwners);
+  const companies = useSelector(selectCompanies);
+
   const [companyDetails, setCompanyDetails] = useState({
     id: "",
     taxId: "",
@@ -111,11 +115,73 @@ export function CompanyInformation() {
   };
 
   const handleOwnerSave = () => {
+    const userId = crypto.randomUUID();
+    setCompanyDetails({
+      ...companyDetails,
+      owners: [...companyDetails.owners, userId]
+    });
+    dispatch(addOwner({
+      ...ownerDetails,
+      id: userId
+    }));
+    setOwnerDetails({
+      id: "",
+      name: "",
+      role: "",
+      licenceFile: null,
+    });
+  };
 
+  const handleAddCompanyClick = () => {
+    const companyId = crypto.randomUUID();
+    dispatch(addCompany({
+      ...companyDetails,
+      id: companyId
+    }));
+    setOwnerDetails({
+      id: "",
+      name: "",
+      role: "",
+      licenceFile: null,
+    });
+    setCompanyDetails({
+      id: "",
+      taxId: "",
+      address: "",
+      owners: [],
+    });
+  };
+
+  const _renderOwnersList = (companyIds) => {
+    let ownerListEl = null;
+    
+    ownerListEl = companyIds.owners.map((ownerId) => {
+      const owner = owners[ownerId];
+
+      return (
+        <li className="added-owners-list-item" key={ownerId}>
+          <div>{owner.name}</div>
+          <div>{owner.role}</div>
+          <div>{owner.licenceFile.name}</div>
+        </li>
+      )
+    });
+
+    return (
+      <div className="added-owners">
+        <Typography sx={{ fontSize: 16 }} color="text.secondary" gutterBottom>
+            <strong>Added Owners</strong>
+        </Typography>
+        <ul className="added-owners-list">
+          {ownerListEl}
+        </ul>
+      </div>
+    );
   };
 
   const _renderOwnerForm = () => {
     if (!ownerFormIsOpen) return null;
+    const saveOnwerBtnIsDisabled = !ownerDetails.name || !ownerDetails.role || !ownerDetails.licenceFile;
 
     return (
       <div>
@@ -151,13 +217,19 @@ export function CompanyInformation() {
             startIcon={<CloudUploadIcon />}
             sx={{ width: "100%", marginTop: "12px" }}
           >
-            Upload file
+            {ownerDetails.licenceFile ? ownerDetails.licenceFile.name : "Upload file"}
             <VisuallyHiddenInput type="file" onChange={handleOwnerLicenceUpload}/>
           </Button>
         </div>
-        <Button variant="outlined" onClick={handleAddOwnersClick} style={{width: '100%', marginTop: "20px"}} onClick={handleOwnerSave}>
+        <Button 
+          variant="outlined" 
+          onClick={handleOwnerSave} 
+          style={{width: '100%', marginTop: "20px"}}
+          disabled={saveOnwerBtnIsDisabled}
+        >
             Save Owner Details
         </Button>
+        {_renderOwnersList(companyDetails)}
       </div>
     )
   };
@@ -191,7 +263,7 @@ export function CompanyInformation() {
               <strong>Owners</strong>
             </Typography>
             <Button variant="outlined" onClick={handleAddOwnersClick}>
-              Add Owners
+              { ownerFormIsOpen ? 'Close Form' : 'Add Owners' }
             </Button>
           </div>
           {_renderOwnerForm()}
@@ -199,6 +271,40 @@ export function CompanyInformation() {
       </div>
     );
   };
+
+  const _renderCompanyList = () => {
+    const companiesId = Object.keys(companies);
+    if (!companiesId.length) return null;
+
+    let companyListEl = null;
+
+    companyListEl = companiesId.map((companyId) => {
+      const company = companies[companyId];
+
+      return (
+        <li className="added-companies-list-item" key={companyId}>
+          <div className="company-info">
+            <div>{company.taxId}</div>
+            <div>{company.address}</div>
+          </div>
+          <div>{_renderOwnersList(company)}</div>
+        </li>
+      )
+    });
+
+    return (
+      <div className="added-owners">
+        <Typography sx={{ fontSize: 16 }} color="text.secondary" gutterBottom>
+            <strong>Added Companies</strong>
+        </Typography>
+        <ul className="added-owners-list">
+          {companyListEl}
+        </ul>
+      </div>
+    );
+  };
+
+  const saveCompanyDetailsIsDisabled = !companyDetails.taxId || !companyDetails.address || !companyDetails.owners.length;
 
   return (
     <Card sx={{ width: "100%" }} className="card company-information">
@@ -208,13 +314,19 @@ export function CompanyInformation() {
             <strong>Company Information</strong>
           </Typography>
           <Button variant="contained" onClick={handleAddCompanyForm}>
-            Add Company
+            {companyFormIsOpen ? 'Close From' : 'Add Company'}
           </Button>
         </div>
         {_renderCompanyForm()}
-        <Button variant="outlined" onClick={handleAddOwnersClick} style={{width: '100%', marginTop: "20px"}}>
-            Save Company Details
+        <Button 
+          variant="outlined"
+          onClick={handleAddCompanyClick}
+          style={{width: '100%', marginTop: "20px"}} 
+          disabled={saveCompanyDetailsIsDisabled}
+        >
+          Save Company Details
         </Button>
+        {_renderCompanyList()}
       </CardContent>
     </Card>
   );
