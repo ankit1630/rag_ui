@@ -1,10 +1,13 @@
 const express = require("express");
+const cors = require('cors');
 const mysql = require("mysql");
 const bodyParser = require("body-parser");
 const taxDetailRoute = require("./taxDetail");
 
 const PORT = process.env.PORT || 3001;
 const app = express();
+
+app.use(cors({ origin: 'https://deeppink-camel-757330.hostingersite.com' }));
 
 // global middleware
 app.use(express.json());
