@@ -35,3 +35,7 @@
 .company-card {
     margin-top: 20px;
 }
+
+.submit-button {
+    margin: 20px 0 !important;
+}

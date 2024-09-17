@@ -1,5 +1,6 @@
-import React from "react";
+import React, {useState} from "react";
 import { useSelector, useDispatch } from "react-redux";
+import axios from "axios";
 
 // CSS
 import "./../styles/businessForm.css";
@@ -17,6 +18,7 @@ import {
   selectSubmmitterDetails,
   toggleSubmitterIsOwner,
 } from "./slices/businessFormSlice";
+import { selectCompanies, selectOwners } from "./slices/companyInformationSlice";
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
@@ -36,12 +38,63 @@ const VisuallyHiddenInput = styled('input')({
 
 export function BusinessForm() {
   const dispatch = useDispatch();
+  const [submitInProgress, setSubmitInProgress] = useState(false);
   const submitterDetails = useSelector(selectSubmmitterDetails);
   const submitterIsOwner = useSelector(isSubmitterOwner);
+  const companies = useSelector(selectCompanies);
+  const owners = useSelector(selectOwners);
+
+  const prepareCompanyDetails = () => {
+    const companiesIds = Object.keys(companies);
+
+    return companiesIds.map((companyId) => {
+      return companies[companyId];
+    });
+  };
+
+  const companyDetails = prepareCompanyDetails();
+
+  const handleSubmit = async () => {
+    setSubmitInProgress(true);
+
+    const formData = new FormData();
+    console.log(submitterDetails.licenceFile);
+    formData.append("submitterDetails", JSON.stringify(submitterDetails));
+    formData.append("companyDetails", JSON.stringify(companyDetails));
+    formData.append("owners", JSON.stringify(owners));
+    formData.append("submitterLicense", submitterDetails.licenceFile);
+
+    const ownerIds = Object.keys(owners);
+    ownerIds.forEach((ownerId) => {
+      formData.append(ownerId, owners[ownerId].licenceFile);
+    })
+
+    const response = axios.post("/api/saveForm", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    });
+
+    console.log(response);
+
+    setSubmitInProgress(false);
+  };
 
   const handleFileUpload = (ev) => {
     dispatch(changeSubmmitterDetails({key: "licenceFile", value: ev.target.files[0]}))
-  }
+  };
+
+  const isSubmitterDetailsIsValid = () => {
+    if (!submitterDetails.name || !submitterDetails.email) {
+      return false;
+    }
+
+    if (submitterIsOwner && !(submitterDetails.address && submitterDetails.contact && submitterDetails.licenceFile)) {
+      return false;
+    }
+
+    return true;
+  };
 
   const _renderAddressFields = () => {
     if (!submitterIsOwner) return null;
@@ -92,7 +145,7 @@ export function BusinessForm() {
         </div>
       </>
     );
-  }
+  };
 
   const _renderSubmitterForm = () => {
     return (
@@ -144,12 +197,15 @@ export function BusinessForm() {
         </CardContent>
       </Card>
     );
-  }
+  };
+
+  const submitBtnIsDisabled = submitInProgress || !(isSubmitterDetailsIsValid() && companyDetails.length)
 
   return (
     <div className="business-form">
       {_renderSubmitterForm()}
       <CompanyInformation />
+      <Button variant="contained" className="submit-button" disabled={submitBtnIsDisabled} onClick={handleSubmit}>Submit Details</Button>
     </div>
   );
 }
