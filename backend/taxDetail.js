@@ -1,7 +1,7 @@
 const express = require("express");
 const fs = require("fs");
 const pool = require("./mysql");
-const { randomUUID } = require("crypto");
+const { v4: uuidv4 } = require('uuid');
 const router = express.Router();
 const fileUpload = require("express-fileupload");
 const path = require("path");
@@ -19,7 +19,7 @@ const saveObject = async (objectPath, jsonObject) => {
 router.post("/saveForm", async (req, res) => {
   const fileIds = Object.keys(req.files);
   const files = req.files;
-  const transactionId = randomUUID();
+  const transactionId = uuidv4();
 
   const data = {
     submitterDetails: JSON.parse(req.body.submitterDetails),

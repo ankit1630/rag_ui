@@ -14,7 +14,8 @@ import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import Typography from "@mui/material/Typography";
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import { styled } from '@mui/material/styles';  
+import { styled } from '@mui/material/styles'; 
+import { v4 as uuidv4 } from 'uuid'; 
 
 import "./../styles/companyInformation.css";
 import { addCompany, addOwner, selectOwners, selectCompanies } from "./slices/companyInformationSlice";
@@ -115,7 +116,7 @@ export function CompanyInformation() {
   };
 
   const handleOwnerSave = () => {
-    const userId = crypto.randomUUID();
+    const userId = uuidv4();
     setCompanyDetails({
       ...companyDetails,
       owners: [...companyDetails.owners, userId]
@@ -133,7 +134,7 @@ export function CompanyInformation() {
   };
 
   const handleAddCompanyClick = () => {
-    const companyId = crypto.randomUUID();
+    const companyId = uuidv4();
     dispatch(addCompany({
       ...companyDetails,
       id: companyId

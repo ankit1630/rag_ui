@@ -69,7 +69,7 @@ export function BusinessForm() {
       formData.append(ownerId, owners[ownerId].licenceFile);
     })
 
-    const response = axios.post("http://31.220.18.57:3001/api/saveForm", formData, {
+    const response = axios.post("/api/saveForm", formData, {
       headers: {
         "Content-Type": "multipart/form-data"
       }
