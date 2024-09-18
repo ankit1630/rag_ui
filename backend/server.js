@@ -7,8 +7,6 @@ const taxDetailRoute = require("./taxDetail");
 const PORT = process.env.PORT || 3001;
 const app = express();
 
-app.use(cors({ origin: 'https://deeppink-camel-757330.hostingersite.com' }));
-
 // global middleware
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
