@@ -1,11 +1,13 @@
 const express = require("express");
-const cors = require('cors');
+const cors = require("cors");
 const mysql = require("mysql");
 const bodyParser = require("body-parser");
 const taxDetailRoute = require("./taxDetail");
 
 const PORT = process.env.PORT || 3001;
 const app = express();
+
+app.use(cors({ origin: "http://31.220.18.57:3001" }));
 
 // global middleware
 app.use(express.json());
