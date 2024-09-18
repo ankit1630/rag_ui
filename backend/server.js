@@ -7,7 +7,7 @@ const taxDetailRoute = require("./taxDetail");
 const PORT = process.env.PORT || 3001;
 const app = express();
 
-app.use(cors({ origin: "http://31.220.18.57:3001" }));
+app.use(cors({ origin: "http://31.220.18.57:3000" }));
 
 // global middleware
 app.use(express.json());
