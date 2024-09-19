@@ -32,13 +32,14 @@ const VisuallyHiddenInput = styled('input')({
   width: 1,
 });
 
-export function CompanyInformation() {
+export function CompanyInformation(props) {
   const dispatch = useDispatch();
   const owners = useSelector(selectOwners);
   const companies = useSelector(selectCompanies);
 
   const [companyDetails, setCompanyDetails] = useState({
     id: "",
+    name: "",
     taxId: "",
     address: "",
     owners: [],
@@ -47,6 +48,7 @@ export function CompanyInformation() {
     id: "",
     name: "",
     role: "",
+    address: "",
     licenceFile: null,
   });
   const [companyFormIsOpen, setCompanyFormIsOpen] = useState(false);
@@ -59,11 +61,13 @@ export function CompanyInformation() {
         id: "",
         name: "",
         role: "",
+        address: "",
         licenceFile: null,
       });
       setCompanyFormIsOpen(false);
       setCompanyDetails({
         id: "",
+        name: "",
         taxId: "",
         address: "",
         owners: [],
@@ -80,6 +84,7 @@ export function CompanyInformation() {
         id: "",
         name: "",
         role: "",
+        address: "",
         licenceFile: null,
       });
     } else {
@@ -98,6 +103,13 @@ export function CompanyInformation() {
     setOwnerDetails({
       ...ownerDetails,
       name: ev.target.value
+    })
+  };
+
+  const handleOnwerAddressChange = (ev) => {
+    setOwnerDetails({
+      ...ownerDetails,
+      address: ev.target.value
     })
   };
 
@@ -129,13 +141,15 @@ export function CompanyInformation() {
       id: "",
       name: "",
       role: "",
+      address: "",
       licenceFile: null,
     });
   };
 
-  const handleAddCompanyClick = () => {
+  const handleAddCompanyClick = async () => {
+    const totalAddedCompanies = Object.keys(companies);
     const companyId = uuidv4();
-    dispatch(addCompany({
+    await dispatch(addCompany({
       ...companyDetails,
       id: companyId
     }));
@@ -143,14 +157,17 @@ export function CompanyInformation() {
       id: "",
       name: "",
       role: "",
+      address: "",
       licenceFile: null,
     });
     setCompanyDetails({
       id: "",
+      name: "",
       taxId: "",
       address: "",
       owners: [],
     });
+    props.createOrUpdateClientSecret(totalAddedCompanies.length + 1);
   };
 
   const _renderOwnersList = (companyIds) => {
@@ -182,7 +199,7 @@ export function CompanyInformation() {
 
   const _renderOwnerForm = () => {
     if (!ownerFormIsOpen) return null;
-    const saveOnwerBtnIsDisabled = !ownerDetails.name || !ownerDetails.role || !ownerDetails.licenceFile;
+    const saveOnwerBtnIsDisabled = !ownerDetails.name || !ownerDetails.role || !ownerDetails.licenceFile || !ownerDetails.address;
 
     return (
       <div>
@@ -194,6 +211,15 @@ export function CompanyInformation() {
           placeholder="Enter owner name"
           value={ownerDetails.name}
           onChange={handleOnwerNameChange}
+        />
+        <TextField
+          sx={{ width: "100%", marginTop: "12px", marginBottom: "12px" }}
+          id="outlined-basic"
+          variant="outlined"
+          className="company-name"
+          placeholder="Enter owner address"
+          value={ownerDetails.address}
+          onChange={handleOnwerAddressChange}
         />
         <FormControl className="owner-role">
           <FormLabel id="demo-row-radio-buttons-group-label">Role</FormLabel>
@@ -209,7 +235,7 @@ export function CompanyInformation() {
           </RadioGroup>
         </FormControl>
         <div>
-          <div>Upload Licence</div>
+          <div>Upload Id (Licence, Passport)</div>
           <Button
             component="label"
             role={undefined}
@@ -240,6 +266,15 @@ export function CompanyInformation() {
 
     return (
       <div className="company-form">
+        <TextField
+          sx={{ width: "100%", marginTop: "12px" }}
+          id="outlined-basic"
+          variant="outlined"
+          className="company-name"
+          placeholder="Enter company name"
+          value={companyDetails.name}
+          onChange={(ev) => handleCompanyDetailUpdate("name", ev.target.value)}
+        />
         <TextField
           sx={{ width: "100%", marginTop: "12px" }}
           id="outlined-basic"
@@ -285,8 +320,8 @@ export function CompanyInformation() {
       return (
         <li className="added-companies-list-item" key={companyId}>
           <div className="company-info">
+            <div>{company.name}</div>
             <div>{company.taxId}</div>
-            <div>{company.address}</div>
           </div>
           <div>{_renderOwnersList(company)}</div>
         </li>
@@ -305,7 +340,7 @@ export function CompanyInformation() {
     );
   };
 
-  const saveCompanyDetailsIsDisabled = !companyDetails.taxId || !companyDetails.address || !companyDetails.owners.length;
+  const saveCompanyDetailsIsDisabled = !companyDetails.name || !companyDetails.taxId || !companyDetails.address || !companyDetails.owners.length;
 
   return (
     <Card sx={{ width: "100%" }} className="card company-information">

@@ -3,6 +3,7 @@ const cors = require("cors");
 const mysql = require("mysql");
 const bodyParser = require("body-parser");
 const taxDetailRoute = require("./taxDetail");
+const paymentRoutes = require("./payment");
 
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -16,6 +17,7 @@ app.use(bodyParser.json({ extended: true }));
 
 // save form routes
 app.use("/api", taxDetailRoute);
+app.use("/api/payment", paymentRoutes);
 
 // not matched with any routes, send 404
 app.use((req, res) => {

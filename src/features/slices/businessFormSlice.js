@@ -26,11 +26,21 @@ export const businessFormSlice = createSlice({
     },
     changeCompanyCount: (state, {payload}) => {
       state.numberOfCompanyOwned = payload.value;
+    },
+    resetSubmitterDetails: (state) => {
+      state.submitterDetails = {
+        name: "",
+        email: "",
+        address: "",
+        contact: "",
+        licenceFile: null
+      };
+      state.submitterIsOwner = false;
     }
   },
 });
 
-export const { changeSubmmitterDetails, toggleSubmitterIsOwner, changeCompanyCount } = businessFormSlice.actions;
+export const { changeSubmmitterDetails, toggleSubmitterIsOwner, changeCompanyCount, resetSubmitterDetails } = businessFormSlice.actions;
 
 export const selectSubmmitterDetails = ({businessForm}) => businessForm.submitterDetails;
 export const isSubmitterOwner = ({businessForm}) => businessForm.submitterIsOwner;

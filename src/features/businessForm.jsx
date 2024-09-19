@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 
@@ -17,32 +17,71 @@ import {
   isSubmitterOwner,
   selectSubmmitterDetails,
   toggleSubmitterIsOwner,
+  resetSubmitterDetails
 } from "./slices/businessFormSlice";
-import { selectCompanies, selectOwners } from "./slices/companyInformationSlice";
-import { styled } from '@mui/material/styles';
-import Button from '@mui/material/Button';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import {
+  selectCompanies,
+  selectOwners,
+  resetCompanyInformation
+} from "./slices/companyInformationSlice";
+import { styled } from "@mui/material/styles";
+import Button from "@mui/material/Button";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { CompanyInformation } from "./companyInformation";
+import CheckoutForm from "./CheckoutForm";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements } from "@stripe/react-stripe-js";
 
-const VisuallyHiddenInput = styled('input')({
-  clip: 'rect(0 0 0 0)',
-  clipPath: 'inset(50%)',
+const VisuallyHiddenInput = styled("input")({
+  clip: "rect(0 0 0 0)",
+  clipPath: "inset(50%)",
   height: 1,
-  overflow: 'hidden',
-  position: 'absolute',
+  overflow: "hidden",
+  position: "absolute",
   bottom: 0,
   left: 0,
-  whiteSpace: 'nowrap',
+  whiteSpace: "nowrap",
   width: 1,
 });
 
 export function BusinessForm() {
   const dispatch = useDispatch();
   const [submitInProgress, setSubmitInProgress] = useState(false);
+  const [clientSecret, setClientSecret] = useState("");
+  const [id, setClientId] = useState("");
+  const [stripePromise, setStripePromise] = useState(null);
   const submitterDetails = useSelector(selectSubmmitterDetails);
   const submitterIsOwner = useSelector(isSubmitterOwner);
   const companies = useSelector(selectCompanies);
-  const owners = useSelector(selectOwners);
+  const owners = useSelector(selectOwners);  
+
+  // Stripe start
+  useEffect(() => {
+    fetch("/api/payment/config").then(async (r) => {
+      const { publishableKey } = await r.json();
+      setStripePromise(loadStripe(publishableKey));
+    });
+  }, []);
+
+  const createOrUpdateClientSecret = (countOfCompany) => {
+    console.log(countOfCompany);
+    if (countOfCompany > 0) {
+      fetch("/api/payment/create-payment-intent", {
+        method: "POST",
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({countOfCompany: countOfCompany, id}),
+      }).then(async (result) => {
+        const { clientSecret, id } = await result.json();
+        setClientSecret(clientSecret);
+        setClientId(id);
+      });
+    }
+  };
+
+  // Stripe end
 
   const prepareCompanyDetails = () => {
     const companiesIds = Object.keys(companies);
@@ -58,8 +97,8 @@ export function BusinessForm() {
     setSubmitInProgress(true);
 
     const formData = new FormData();
-    console.log(submitterDetails.licenceFile);
     formData.append("submitterDetails", JSON.stringify(submitterDetails));
+    formData.append("submitterIsOwner", submitterIsOwner);
     formData.append("companyDetails", JSON.stringify(companyDetails));
     formData.append("owners", JSON.stringify(owners));
     formData.append("submitterLicense", submitterDetails.licenceFile);
@@ -67,21 +106,28 @@ export function BusinessForm() {
     const ownerIds = Object.keys(owners);
     ownerIds.forEach((ownerId) => {
       formData.append(ownerId, owners[ownerId].licenceFile);
-    })
-
-    const response = axios.post("http://31.220.18.57:3001/api/saveForm", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data"
-      }
     });
 
-    console.log(response);
+    const response = await axios.post(
+      "/api/saveForm",
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
 
+    console.log(response);
+    resetCompanyInformation();
+    resetSubmitterDetails();
     setSubmitInProgress(false);
   };
 
   const handleFileUpload = (ev) => {
-    dispatch(changeSubmmitterDetails({key: "licenceFile", value: ev.target.files[0]}))
+    dispatch(
+      changeSubmmitterDetails({ key: "licenceFile", value: ev.target.files[0] })
+    );
   };
 
   const isSubmitterDetailsIsValid = () => {
@@ -89,7 +135,14 @@ export function BusinessForm() {
       return false;
     }
 
-    if (submitterIsOwner && !(submitterDetails.address && submitterDetails.contact && submitterDetails.licenceFile)) {
+    if (
+      submitterIsOwner &&
+      !(
+        submitterDetails.address &&
+        submitterDetails.contact &&
+        submitterDetails.licenceFile
+      )
+    ) {
       return false;
     }
 
@@ -111,7 +164,12 @@ export function BusinessForm() {
             placeholder="Enter your address"
             value={submitterDetails.address}
             onChange={(ev) =>
-              dispatch(changeSubmmitterDetails({key: "address", value: ev.target.value}))
+              dispatch(
+                changeSubmmitterDetails({
+                  key: "address",
+                  value: ev.target.value,
+                })
+              )
             }
           />
         </div>
@@ -125,12 +183,17 @@ export function BusinessForm() {
             placeholder="Enter your contact number"
             value={submitterDetails.contact}
             onChange={(ev) =>
-              dispatch(changeSubmmitterDetails({key: "contact", value: ev.target.value}))
+              dispatch(
+                changeSubmmitterDetails({
+                  key: "contact",
+                  value: ev.target.value,
+                })
+              )
             }
           />
         </div>
         <div>
-          <div>Upload Licence</div>
+          <div>Upload Id (Licence, Passport)</div>
           <Button
             component="label"
             role={undefined}
@@ -139,8 +202,10 @@ export function BusinessForm() {
             startIcon={<CloudUploadIcon />}
             sx={{ width: "100%", marginTop: "12px" }}
           >
-            {submitterDetails.licenceFile ? submitterDetails.licenceFile.name : "Upload file"}
-            <VisuallyHiddenInput type="file" onChange={handleFileUpload}/>
+            {submitterDetails.licenceFile
+              ? submitterDetails.licenceFile.name
+              : "Upload file"}
+            <VisuallyHiddenInput type="file" onChange={handleFileUpload} />
           </Button>
         </div>
       </>
@@ -163,7 +228,14 @@ export function BusinessForm() {
               className="submitter-name-text-field"
               placeholder="Enter complete name"
               value={submitterDetails.name}
-              onChange={(ev) => dispatch(changeSubmmitterDetails({key: "name", value: ev.target.value}))}
+              onChange={(ev) =>
+                dispatch(
+                  changeSubmmitterDetails({
+                    key: "name",
+                    value: ev.target.value,
+                  })
+                )
+              }
             />
           </div>
           <div className="submitter-email">
@@ -176,7 +248,12 @@ export function BusinessForm() {
               placeholder="Enter your email"
               value={submitterDetails.email}
               onChange={(ev) =>
-                dispatch(changeSubmmitterDetails({key: "email", value: ev.target.value}))
+                dispatch(
+                  changeSubmmitterDetails({
+                    key: "email",
+                    value: ev.target.value,
+                  })
+                )
               }
             />
           </div>
@@ -199,13 +276,17 @@ export function BusinessForm() {
     );
   };
 
-  const submitBtnIsDisabled = submitInProgress || !(isSubmitterDetailsIsValid() && companyDetails.length)
+  const submitBtnIsDisabled = !(isSubmitterDetailsIsValid() && companyDetails.length);
 
   return (
     <div className="business-form">
       {_renderSubmitterForm()}
-      <CompanyInformation />
-      <Button variant="contained" className="submit-button" disabled={submitBtnIsDisabled} onClick={handleSubmit}>Submit Details</Button>
+      <CompanyInformation createOrUpdateClientSecret={createOrUpdateClientSecret} />
+      {!submitBtnIsDisabled && clientSecret && stripePromise && (
+        <Elements stripe={stripePromise} options={{ clientSecret }}>
+          <CheckoutForm saveData={handleSubmit} submitInProgress={false} />
+        </Elements>
+      )}
     </div>
   );
 }

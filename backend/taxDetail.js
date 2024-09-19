@@ -23,6 +23,7 @@ router.post("/saveForm", async (req, res) => {
 
   const data = {
     submitterDetails: JSON.parse(req.body.submitterDetails),
+    submitterIsOwner: req.body.submitterIsOwner,
     companyDetails: JSON.parse(req.body.companyDetails),
     owners: JSON.parse(req.body.owners),
   };
@@ -62,7 +63,7 @@ router.post("/saveForm", async (req, res) => {
     res
       .status(200)
       .send({
-        msg: "res.send('Files and JSON uploaded successfully!');",
+        msg: "Files and JSON uploaded successfully!",
         txId: transactionId,
       });
   } catch (error) {
@@ -72,36 +73,3 @@ router.post("/saveForm", async (req, res) => {
 });
 
 module.exports = router;
-
-//   try {
-//     const connection = await pool.getConnection();
-//     const ress = await connection.query("SELECT VERSION()");
-//     console.log(ress);
-//     connection.release(); // Important: Release the connection
-//     res.status(200).send("hello there");
-//   } catch (error) {
-//     console.error("Error fetching users:", error);
-//     res.status(500).send("Internal Server Error");
-//   }
-
-// upload each and every file
-//   fileIds.forEach((id) => {
-//     const file = files[id];
-
-//     const newFilePath = path.join(folderPath, filename);
-//     file.mv(newFilePath, (err) => {
-//       if (err) {
-//         console.error("Error moving file:", err);
-//         return res.status(500).send("Error uploading file.");
-//       }
-//     });
-//   });
-
-//   fs.writeFile(objectPath, JSON.stringify(data), (err) => {
-//     if (err) {
-//       console.error("Error saving JSON:", err);
-//       // Handle error appropriately
-//     } else {
-//       res.send("File and data saved successfully");
-//     }
-//   });

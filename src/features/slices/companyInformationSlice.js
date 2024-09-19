@@ -20,11 +20,15 @@ export const companyInformationSlice = createSlice({
         if (!state.owners[action.payload.id]) {
             state.owners[action.payload.id] = action.payload;
         }
+    },
+    resetCompanyInformation: (state) => {
+      state.companies = {};
+      state.owners = {};
     }
   },
 });
 
-export const { addCompany, addOwner } = companyInformationSlice.actions;
+export const { addCompany, addOwner, resetCompanyInformation } = companyInformationSlice.actions;
 
 export const selectCompanies = ({companyInformation}) => companyInformation.companies;
 export const selectOwners = ({companyInformation}) => companyInformation.owners;
