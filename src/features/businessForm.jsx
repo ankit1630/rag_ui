@@ -57,7 +57,7 @@ export function BusinessForm() {
 
   // Stripe start
   useEffect(() => {
-    fetch("/api/payment/config").then(async (r) => {
+    fetch("http://31.220.18.57:3001/api/payment/config").then(async (r) => {
       const { publishableKey } = await r.json();
       setStripePromise(loadStripe(publishableKey));
     });
@@ -66,7 +66,7 @@ export function BusinessForm() {
   const createOrUpdateClientSecret = (countOfCompany) => {
     console.log(countOfCompany);
     if (countOfCompany > 0) {
-      fetch("/api/payment/create-payment-intent", {
+      fetch("http://31.220.18.57:3001/api/payment/create-payment-intent", {
         method: "POST",
         headers: {
           'Accept': 'application/json',
@@ -109,7 +109,7 @@ export function BusinessForm() {
     });
 
     const response = await axios.post(
-      "/api/saveForm",
+      "http://31.220.18.57:3001/api/saveForm",
       formData,
       {
         headers: {
