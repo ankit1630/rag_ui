@@ -47,7 +47,6 @@ export function CompanyInformation(props) {
   const [ownerDetails, setOwnerDetails] = useState({
     id: "",
     name: "",
-    role: "",
     address: "",
     licenceFile: null,
   });
@@ -60,7 +59,6 @@ export function CompanyInformation(props) {
       setOwnerDetails({
         id: "",
         name: "",
-        role: "",
         address: "",
         licenceFile: null,
       });
@@ -83,7 +81,6 @@ export function CompanyInformation(props) {
       setOwnerDetails({
         id: "",
         name: "",
-        role: "",
         address: "",
         licenceFile: null,
       });
@@ -113,13 +110,6 @@ export function CompanyInformation(props) {
     })
   };
 
-  const handleOwnerRoleChange = (ev) => {
-    setOwnerDetails({
-      ...ownerDetails,
-      role: ev.target.value
-    });
-  };
-
   const handleOwnerLicenceUpload = (ev) => {
     setOwnerDetails({
       ...ownerDetails,
@@ -140,7 +130,6 @@ export function CompanyInformation(props) {
     setOwnerDetails({
       id: "",
       name: "",
-      role: "",
       address: "",
       licenceFile: null,
     });
@@ -156,7 +145,6 @@ export function CompanyInformation(props) {
     setOwnerDetails({
       id: "",
       name: "",
-      role: "",
       address: "",
       licenceFile: null,
     });
@@ -179,7 +167,6 @@ export function CompanyInformation(props) {
       return (
         <li className="added-owners-list-item" key={ownerId}>
           <div>{owner.name}</div>
-          <div>{owner.role}</div>
           <div>{owner.licenceFile.name}</div>
         </li>
       )
@@ -199,7 +186,7 @@ export function CompanyInformation(props) {
 
   const _renderOwnerForm = () => {
     if (!ownerFormIsOpen) return null;
-    const saveOnwerBtnIsDisabled = !ownerDetails.name || !ownerDetails.role || !ownerDetails.licenceFile || !ownerDetails.address;
+    const saveOnwerBtnIsDisabled = !ownerDetails.name || !ownerDetails.licenceFile || !ownerDetails.address;
 
     return (
       <div>
@@ -217,23 +204,10 @@ export function CompanyInformation(props) {
           id="outlined-basic"
           variant="outlined"
           className="company-name"
-          placeholder="Enter owner address"
+          placeholder="Enter owner's residential address"
           value={ownerDetails.address}
           onChange={handleOnwerAddressChange}
         />
-        <FormControl className="owner-role">
-          <FormLabel id="demo-row-radio-buttons-group-label">Role</FormLabel>
-          <RadioGroup
-            row
-            aria-labelledby="demo-row-radio-buttons-group-label"
-            name="row-radio-buttons-group"
-            value={ownerDetails.role}
-            onChange={handleOwnerRoleChange}
-          >
-            <FormControlLabel value="user" control={<Radio />} label="User" />
-            <FormControlLabel value="business" control={<Radio />} label="Business" />
-          </RadioGroup>
-        </FormControl>
         <div>
           <div>Upload Id (Licence, Passport)</div>
           <Button
@@ -289,7 +263,7 @@ export function CompanyInformation(props) {
           id="outlined-basic"
           variant="outlined"
           className="company-address"
-          placeholder="Enter your address"
+          placeholder="Enter company's business address"
           value={companyDetails.address}
           onChange={(ev) => handleCompanyDetailUpdate("address", ev.target.value)}
         />

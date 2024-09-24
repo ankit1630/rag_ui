@@ -53,7 +53,9 @@ export function BusinessForm() {
   const submitterDetails = useSelector(selectSubmmitterDetails);
   const submitterIsOwner = useSelector(isSubmitterOwner);
   const companies = useSelector(selectCompanies);
-  const owners = useSelector(selectOwners);  
+  const owners = useSelector(selectOwners);
+  const [saveIsSuccessful, setSaveSuccessful] = useState(false);
+  const [txId, setTxId] = useState("");
 
   // Stripe start
   useEffect(() => {
@@ -122,6 +124,9 @@ export function BusinessForm() {
     resetCompanyInformation();
     resetSubmitterDetails();
     setSubmitInProgress(false);
+    setTxId(response.data.txId);
+
+    setSaveSuccessful(true);
   };
 
   const handleFileUpload = (ev) => {
@@ -267,7 +272,7 @@ export function BusinessForm() {
                   }
                 />
               }
-              label="Is the submitter different from the owner?"
+              label="Are you an owner?"
             />
           </FormGroup>
           {_renderAddressFields()}
@@ -277,6 +282,17 @@ export function BusinessForm() {
   };
 
   const submitBtnIsDisabled = !(isSubmitterDetailsIsValid() && companyDetails.length);
+
+  if (saveIsSuccessful) {
+    return (
+      <div className="business-form">
+        <h3 style={{textAlign: "justify"}}>
+          Thank you! Your form has been submitted successfully. We'll contact you over email!.
+          Transaction Id: {txId}
+        </h3>
+      </div>
+    );
+  }
 
   return (
     <div className="business-form">
